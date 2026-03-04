@@ -366,10 +366,10 @@ class RobustEvaluator:
         print(f"\n  {'Metric':<15} {'Mean':>10} {'± Std':>10}")
         print(f"  {'─' * 35}")
         
-        f1_mean = avg_results["f1"]
-        f1_std = avg_results["f1_std"]
-        auc_mean = avg_results["roc_auc"]
-        auc_std = avg_results["auc_std"]
+        f1_mean = avg_results['f1']
+        f1_std = avg_results['f1_std']
+        auc_mean = avg_results['roc_auc']
+        auc_std = avg_results['auc_std']
         
         print(f"  {'F1':<15} {f1_mean:>10.4f} ± {f1_std:>9.4f}")
         print(f"  {'AUC':<15} {auc_mean:>10.4f} ± {auc_std:>9.4f}")
