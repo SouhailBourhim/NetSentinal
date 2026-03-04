@@ -96,6 +96,7 @@ The predictor exposes:
 | `predict_batch(list[dict])` | List of flows → list of predictions |
 | `predict_dataframe(df: pd.DataFrame)` | DataFrame → DataFrame with extra prediction columns |
 | `get_model_info()` | Returns which models are loaded, feature count, and hybrid weights |
+
 ## 4. FastAPI Application (`src/api/app.py`)
 
 ### 4.1 Endpoints
@@ -185,8 +186,9 @@ uvicorn src.api.app:app --reload --port 8000
 ```
 
 Open:
-- Docs: http://localhost:8000/docs
-- Health: http://localhost:8000/health
+- Docs: <http://localhost:8000/docs>
+- Health: <http://localhost:8000/health>
+
 ## 5. Streamlit Dashboard (`src/dashboard/app.py`)
 
 The Streamlit app provides an analyst-friendly UI on top of the same predictor.
@@ -241,7 +243,7 @@ source venv/bin/activate
 streamlit run src/dashboard/app.py
 ```
 
-Open: http://localhost:8501
+Open: <http://localhost:8501>
 
 ## 6. Docker Deployment
 
@@ -285,8 +287,8 @@ This will:
 - Start both services
 
 Access:
-- API: http://localhost:8000/docs
-- Dashboard: http://localhost:8501
+- API: <http://localhost:8000/docs>
+- Dashboard: <http://localhost:8501>
 
 To stop:
 
@@ -294,6 +296,7 @@ To stop:
 Ctrl+C
 docker-compose down
 ```
+
 ## 7. Input Features and Preprocessing
 
 The API and dashboard assume the same features and scaling as used in Phase 3:
@@ -323,6 +326,7 @@ If you want to re-train models and re-deploy:
      - `feature_names.json`
      - (optional) `model_comparison.json`
 3. **Phase 4** — restart API and dashboard (or rebuild Docker image).
+
 ## 9. Limitations & Future Work
 
 ### Dataset bias:
@@ -349,6 +353,7 @@ If you want to re-train models and re-deploy:
 - Integrate with a message bus (e.g., Kafka) for streaming traffic.
 - Use time-series context (LSTMs, transformers) instead of single-flow models.
 - Implement continuous retraining with real network logs.
+
 ## 10. Summary
 
 Phase 4 completes the NetSentinel project by delivering:

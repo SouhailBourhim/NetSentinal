@@ -25,99 +25,106 @@ The system includes a **REST API** (FastAPI), a **monitoring dashboard**
 ---
 
 ## 🏗️ Architecture
+
+```text
 ┌─────────────────────────────────────────────────────────┐
-│ NetSentinel │
-│ │
-│ Network Traffic │
-│ │ │
-│ ▼ │
-│ ┌──────────┐ ┌──────────┐ ┌──────────────────┐ │
-│ │ Feature │───▶│ Scaler │───▶│ Hybrid Model │ │
-│ │ Extraction│ │(Standard)│ │ │ │
-│ └──────────┘ └──────────┘ │ ┌──────┐ ┌─────┐│ │
-│ │ │XGBoost│ │ IF ││ │
-│ │ │ (70%) │ │(30%)││ │
-│ │ └──┬───┘ └──┬──┘│ │
-│ │ └────┬───┘ │ │
-│ │ ▼ │ │
-│ │ Hybrid Score │ │
-│ └────────┬────────┘ │
-│ │ │
-│ ┌─────────────┴──────────┐ │
-│ │ │ │
-│ ┌────▼────┐ ┌──────▼─┐│
-│ │ FastAPI │ │Streamlit││
-│ │ :8000 │ │ :8501 ││
-│ └─────────┘ └────────┘│
+│                    NetSentinel                          │
+│                                                         │
+│  Network Traffic Input                                  │
+│  │                                                      │
+│  ▼                                                      │
+│  ┌──────────┐   ┌──────────┐   ┌──────────────────┐    │
+│  │ Feature  │──▶│ Scaler   │──▶│   Hybrid Model   │    │
+│  │Extraction│   │(Standard)│   │                  │    │
+│  └──────────┘   └──────────┘   │ ┌──────┐ ┌─────┐ │    │
+│                               │ │XGBoost│ │ IF  │ │    │
+│                               │ │ (70%) │ │(30%)│ │    │
+│                               │ └──┬───┘ └──┬──┘ │    │
+│                               │    └────┬───┘    │    │
+│                               │       ▼          │    │
+│                               │  Hybrid Score     │    │
+│                               └───────┬───────────┘    │
+│                                       │               │
+│                          ┌────────────┴──────────┐     │
+│                          │                     │     │
+│                   ┌──────▼────┐        ┌───────▼─────┐│
+│                   │  FastAPI  │        │ Streamlit  ││
+│                   │   API     │        │ Dashboard  ││
+│                   │  :8000    │        │   :8501    ││
+│                   └───────────┘        └────────────┘│
 └─────────────────────────────────────────────────────────┘
+```
 
 
 ---
 
 ## 📁 Project Structure
+
+```text
 NetSentinel/
-├── README.md # This file
-├── requirements.txt # Python dependencies
-├── Dockerfile # Container definition
-├── docker-compose.yml # Multi-service orchestration
+├── README.md                    # This file
+├── requirements.txt             # Python dependencies
+├── Dockerfile                   # Container definition
+├── docker-compose.yml           # Multi-service orchestration
 │
 ├── configs/
-│ └── model_config.yaml # Model hyperparameters
+│   └── model_config.yaml        # Model hyperparameters
 │
 ├── data/
-│ ├── raw/ # CIC-IDS2017 CSV files (not tracked)
-│ └── processed/ # Cleaned & engineered data (not tracked)
-│ └── cleaning_report.json # Data cleaning documentation
+│   ├── raw/                     # CIC-IDS2017 CSV files (not tracked)
+│   ├── processed/               # Cleaned & engineered data (not tracked)
+│   └── cleaning_report.json     # Data cleaning documentation
 │
 ├── docs/
-│ ├── phase1_exploration.md # Phase 1 documentation
-│ ├── phase2_preprocessing.md # Phase 2 documentation
-│ ├── phase3_models.md # Phase 3 documentation
-│ └── phase4_deployment.md # Phase 4 documentation
+│   ├── phase1_exploration.md    # Phase 1 documentation
+│   ├── phase2_preprocessing.md  # Phase 2 documentation
+│   ├── phase3_models.md         # Phase 3 documentation
+│   └── phase4_deployment.md     # Phase 4 documentation
 │
 ├── notebooks/
-│ ├── 01_exploration.ipynb # Data exploration & EDA
-│ ├── 02_preprocessing.ipynb # Cleaning & feature engineering
-│ ├── 03_model_training.ipynb # Baseline model training
-│ ├── 04_leakage_check.ipynb # Data leakage investigation
-│ ├── 05_robust_evaluation.ipynb # Multi-strategy evaluation
-│ ├── 06_improved_temporal.ipynb # Temporal XGBoost optimization
-│ ├── 07_hybrid_model.ipynb # Hybrid XGB + IF approach
-│ └── 08_phase3_completion.ipynb # Final training & model saving
+│   ├── 01_exploration.ipynb     # Data exploration & EDA
+│   ├── 02_preprocessing.ipynb   # Cleaning & feature engineering
+│   ├── 03_model_training.ipynb  # Baseline model training
+│   ├── 04_leakage_check.ipynb   # Data leakage investigation
+│   ├── 05_robust_evaluation.ipynb # Multi-strategy evaluation
+│   ├── 06_improved_temporal.ipynb # Temporal XGBoost optimization
+│   ├── 07_hybrid_model.ipynb    # Hybrid XGB + IF approach
+│   └── 08_phase3_completion.ipynb # Final training & model saving
 │
-├── saved_models/ # Trained model artifacts (not tracked)
-│ ├── xgboost_tuned.pkl
-│ ├── isolation_forest.pkl
-│ ├── random_forest.pkl
-│ ├── autoencoder.keras
-│ ├── scaler.pkl
-│ ├── feature_names.json
-│ ├── best_params.json
-│ └── model_comparison.json
+├── saved_models/                # Trained model artifacts (not tracked)
+│   ├── xgboost_tuned.pkl
+│   ├── isolation_forest.pkl
+│   ├── random_forest.pkl
+│   ├── autoencoder.keras
+│   ├── scaler.pkl
+│   ├── feature_names.json
+│   ├── best_params.json
+│   └── model_comparison.json
 │
 └── src/
-├── data/
-│ ├── preprocessor.py # Data cleaning pipeline
-│ └── splitter.py # Train/test split + SMOTE
-│
-├── features/
-│ └── engineer.py # Feature engineering
-│
-├── models/
-│ ├── base_model.py # Abstract detector interface
-│ ├── isolation_forest.py # Unsupervised detector
-│ ├── random_forest.py # Supervised detector
-│ ├── xgboost_model.py # Gradient boosting detector
-│ ├── autoencoder.py # Deep learning detector
-│ ├── comparator.py # Model comparison utilities
-│ └── robust_evaluator.py # Leakage-aware evaluation
-│
-├── api/
-│ ├── predictor.py # Model loading & prediction
-│ └── app.py # FastAPI application
-│
-└── dashboard/
-└── app.py # Streamlit dashboard
+    ├── data/
+    │   ├── preprocessor.py       # Data cleaning pipeline
+    │   └── splitter.py           # Train/test split + SMOTE
+    │
+    ├── features/
+    │   └── engineer.py           # Feature engineering
+    │
+    ├── models/
+    │   ├── base_model.py         # Abstract detector interface
+    │   ├── isolation_forest.py   # Unsupervised detector
+    │   ├── random_forest.py       # Supervised detector
+    │   ├── xgboost_model.py       # Gradient boosting detector
+    │   ├── autoencoder.py         # Deep learning detector
+    │   ├── comparator.py          # Model comparison utilities
+    │   └── robust_evaluator.py    # Leakage-aware evaluation
+    │
+    ├── api/
+    │   ├── predictor.py          # Model loading & prediction
+    │   └── app.py                 # FastAPI application
+    │
+    └── dashboard/
+        └── app.py                 # Streamlit dashboard
+```
 
 
 ---
@@ -154,9 +161,9 @@ pip install -r requirements.txt
 ### 4. Download Dataset
 
 Download CIC-IDS2017 (MachineLearningCSV.zip) from:
-https://www.unb.ca/cic/datasets/ids-2017.html
+<https://www.unb.ca/cic/datasets/ids-2017.html>
 
-Extract CSV files into data/raw/:
+Extract CSV files into `data/raw/`:
 ```bash
 mkdir -p data/raw
 # Extract CSVs into data/raw/
@@ -185,22 +192,22 @@ jupyter notebook notebooks/05_robust_evaluation.ipynb
 ```bash
 uvicorn src.api.app:app --reload --port 8000
 ```
-Open API docs: http://localhost:8000/docs
+Open API docs: <http://localhost:8000/docs>
 
 ### 7. Start the Dashboard
 
 ```bash
 streamlit run src/dashboard/app.py
 ```
-Open dashboard: http://localhost:8501
+Open dashboard: <http://localhost:8501>
 
 ### 8. Run with Docker
 
 ```bash
 docker-compose up --build
 ```
-API: http://localhost:8000/docs
-Dashboard: http://localhost:8501
+API: <http://localhost:8000/docs>
+Dashboard: <http://localhost:8501>
 
 ---
 
@@ -266,6 +273,7 @@ curl -X POST http://localhost:8000/predict/batch \
     ]
   }'
 ```
+
 ## 📊 Model Performance
 
 ### Evaluation Summary
@@ -357,7 +365,7 @@ Engineering Student at INPT (Smart-ICT)
 
 This project is licensed under the MIT License.
 
-## � Acknowledgments
+## 🙏 Acknowledgments
 
 - **CIC-IDS2017 Dataset** — Canadian Institute for Cybersecurity, UNB
 - **INPT** — Institut National des Postes et Télécommunications
