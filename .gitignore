@@ -41,6 +41,7 @@ mlartifacts/
 # Virtual environment, cache, compiled files
 # ──────────────────────────────────────────────────────────────
 venv/
+venv_tf/
 env/
 .venv/
 __pycache__/
